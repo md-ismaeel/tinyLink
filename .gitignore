@@ -26,32 +26,4 @@ out/
 .DS_Store
 Thumbs.db
 
-# VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# Optional: Turbo Pack
-.turbo/
-
-# Optional: next-sitemap
-sitemap.xml
-sitemap-*.xml
-robots.txt
-
-# Optional: Testing
-coverage/
-
-# Optional: Logs folder
-logs
-*.log
-
-# Optional: Storybook
-storybook-static/
-
-# Optional: Local database files
-*.sqlite
-*.db
 
