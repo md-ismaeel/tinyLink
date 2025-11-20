@@ -5,9 +5,9 @@ export const metadata: Metadata = {
   title: 'TinyLink - URL Shortener',
   description: 'Shorten your URLs with ease. Create short links, track clicks, and manage your shortened URLs.',
   generator: 'tiny-link',
-  icons: {
-    icon: '/public/favicon.png',
-  }
+  // icons: {
+  //   icon: '/public/favicon.png',
+  // }
 }
 
 export default function RootLayout({
