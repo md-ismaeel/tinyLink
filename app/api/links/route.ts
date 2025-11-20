@@ -2,7 +2,7 @@ import { sql } from '@/lib/db';
 import { generateShortCode, isValidUrl, isValidShortCode } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
-// POST /api/links - Create a new shortened link
+//  Create a new shortened link
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

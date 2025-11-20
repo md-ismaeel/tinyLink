@@ -7,7 +7,7 @@ import { toast, Toaster } from 'react-hot-toast';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Link from 'next/link';
-import { Home, Trash2, View } from 'lucide-react';
+import { Home, Trash2, View, Link as LinkIcon, Calendar, Clock, Copy, Check, ExternalLink } from 'lucide-react';
 
 interface LinkStats {
   id: number;
@@ -25,9 +25,14 @@ export default function StatsPage() {
   const code = params.code as string;
 
   const [stats, setStats] = useState<LinkStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // State used to force a synchronous error throw (for error.js boundary)
+  const [errorToThrow, setErrorToThrow] = useState<Error | null>(null);
+
+  if (errorToThrow) {
+    throw errorToThrow;
+  }
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -36,21 +41,27 @@ export default function StatsPage() {
         setStats(response.data);
         toast.success('Stats loaded successfully!');
       } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 404) {
-          setError('Link not found');
-          toast.error('Link not found');
+        let error: Error;
+
+        if (axios.isAxiosError(err) && err.response) {
+          const status = err.response.status;
+          let message = status === 404
+            ? `Link Not Found (404) for code: ${code}`
+            : `API Failure (Status: ${status}).`;
+          error = new Error(message);
         } else {
-          setError('Failed to fetch stats');
-          toast.error('Failed to fetch stats');
+          error = new Error("A network or unknown error occurred.");
         }
-      } finally {
-        setLoading(false);
+
+        // Triggers re-render, activating the synchronous throw above.
+        setErrorToThrow(error);
       }
     };
 
     fetchStats();
   }, [code]);
 
+  // handle copy to clipboard
   const handleCopy = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
     const shortUrl = `${baseUrl}/${code}`;
@@ -90,43 +101,11 @@ export default function StatsPage() {
     }
   };
 
-  // if (loading) {
-  //   return (
-      
-  //   );
-  // }
-
-  if (error || !stats) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <Toaster position="top-right" />
-        <Header />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-slide-in-up">
-          <div className="glass border border-red-200 dark:border-red-900/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-xl">
-            <div className="flex flex-col sm:flex-row items-start gap-4">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg sm:text-xl font-semibold text-red-900 dark:text-red-100 mb-2">
-                  {error || 'Link not found'}
-                </h3>
-                <p className="text-sm sm:text-base text-red-700 dark:text-red-300">
-                  The link you're looking for doesn't exist or has been deleted.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  if (!stats) {
+    return null;
   }
 
+  // --- Main Content Logic ---
   const createdDate = new Date(stats.created_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -171,9 +150,7 @@ export default function StatsPage() {
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <h2 className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
+                  <LinkIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Short Code</span>
                 </h2>
                 <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-3">
@@ -186,16 +163,12 @@ export default function StatsPage() {
                   >
                     {copied ? (
                       <>
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                         <span>Copied!</span>
                       </>
                     ) : (
                       <>
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
+                        <Copy className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                         <span>Copy URL</span>
                       </>
                     )}
@@ -206,13 +179,11 @@ export default function StatsPage() {
                     {shortUrl}
                   </p>
                   <Link
-                    className='w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg whitespace-nowrap'
+                    className={`relative px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 cursor-pointer`}
                     href={shortUrl}
                     target='_blank'
                   >
-                    <svg className="w-4 h-4 shrink-0 mt-0.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <ExternalLink className="w-4 h-4 shrink-0 mt-0.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     <span>View Link</span>
                   </Link>
                 </div>
@@ -223,9 +194,7 @@ export default function StatsPage() {
           {/* Original URL Card */}
           <div className="glass border border-gray-200/50 dark:border-gray-700/50 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-xl card-hover">
             <h2 className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+              <ExternalLink className="w-4 h-4 shrink-0" />
               <span>Target URL</span>
             </h2>
             <Link
@@ -245,9 +214,7 @@ export default function StatsPage() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3 sm:mb-4">
                   <div className="p-2 sm:p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg sm:rounded-xl">
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                    </svg>
+                    <View className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3 className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
                     Total Clicks
@@ -264,9 +231,7 @@ export default function StatsPage() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3 sm:mb-4">
                   <div className="p-2 sm:p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg sm:rounded-xl">
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
                     Created
@@ -283,9 +248,7 @@ export default function StatsPage() {
               <div className="relative">
                 <div className="flex items-center gap-3 mb-3 sm:mb-4">
                   <div className="p-2 sm:p-3 bg-green-100 dark:bg-green-900/30 rounded-lg sm:rounded-xl">
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
                     Last Clicked

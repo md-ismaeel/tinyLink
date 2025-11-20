@@ -5,6 +5,17 @@ import Link from 'next/link';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
+import {
+  Link as LinkIcon,
+  Copy,
+  Check,
+  ExternalLink,
+  MousePointerClick,
+  BarChart2,
+  Trash2,
+} from 'lucide-react';
+import Loading from './loading';
+
 interface LinkData {
   id: number;
   short_code: string;
@@ -83,29 +94,20 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
     return url.length > maxLength ? url.substring(0, maxLength) + '...' : url;
   };
 
+  // --- Loading State ---
   if (loading) {
     return (
-      <div className="glass border border-gray-200/50 dark:border-gray-700/50 rounded-2xl p-8 shadow-xl">
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="animate-pulse flex items-center gap-4">
-              <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg flex-1 shimmer-loading"></div>
-              <div className="h-12 w-24 bg-gray-200 dark:bg-gray-700 rounded-lg shimmer-loading"></div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Loading />
     );
   }
 
+  // --- Empty State ---
   if (links.length === 0) {
     return (
       <div className="glass border border-gray-200/50 dark:border-gray-700/50 rounded-2xl p-12 shadow-xl text-center">
         <div className="max-w-sm mx-auto">
           <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center animate-float">
-            <svg className="w-10 h-10 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+            <LinkIcon className="w-10 h-10 text-blue-600 dark:text-blue-400" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No links yet</h3>
           <p className="text-gray-600 dark:text-gray-400">Create your first short link to get started!</p>
@@ -116,7 +118,7 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
 
   return (
     <div className="glass border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-xl overflow-hidden">
-      {/* Desktop Table View */}
+      {/* Desktop Table View (md:block) */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -155,13 +157,9 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
                       {link.short_code}
                     </span>
                     {copied === link.short_code ? (
-                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="w-4 h-4 text-green-500" />
                     ) : (
-                      <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
+                      <Copy className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                     )}
                   </button>
                 </td>
@@ -174,17 +172,13 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
                     title={link.original_url}
                   >
                     <span className="truncate max-w-xs">{truncateUrl(link.original_url)}</span>
-                    <svg className="w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
+                    <ExternalLink className="w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                      <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                      </svg>
+                      <MousePointerClick className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <span className="text-sm font-bold text-gray-900 dark:text-white">
                       {link.click_count.toLocaleString()}
@@ -209,18 +203,14 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
                       href={`/code/${link.short_code}`}
                       className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
+                      <BarChart2 className="w-4 h-4" />
                       Stats
                     </Link>
                     <button
                       onClick={() => handleDelete(link.short_code)}
                       className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
+                      <Trash2 className="w-4 h-4" />
                       Delete
                     </button>
                   </div>
@@ -231,7 +221,7 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
         </table>
       </div>
 
-      {/* Mobile Card View */}
+      {/* Mobile Card View (md:hidden) */}
       <div className="md:hidden divide-y divide-gray-200 dark:divide-gray-700">
         {links.map((link, index) => (
           <div
@@ -248,16 +238,12 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
                   <span className="bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg">
                     {link.short_code}
                   </span>
-                  {copied === link.short_code && (
-                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
+                  {copied === link.short_code ? (
+                    <Check className="w-4 h-4 text-green-500" />
+                  ) : (null)}
                 </button>
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                  </svg>
+                  <MousePointerClick className="w-4 h-4" />
                   <span className="font-bold">{link.click_count}</span>
                 </div>
               </div>
@@ -281,12 +267,14 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
                     href={`/code/${link.short_code}`}
                     className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-medium"
                   >
+                    <BarChart2 className="w-4 h-4" />
                     Stats
                   </Link>
                   <button
                     onClick={() => handleDelete(link.short_code)}
                     className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg text-xs font-medium"
                   >
+                    <Trash2 className="w-4 h-4" />
                     Delete
                   </button>
                 </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Link2, Moon, Sun } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -47,22 +47,21 @@ export default function Header() {
                         {!isHomePage && (
                             <Link
                                 href="/"
-                                className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                                className=" text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                                 aria-label="Back to home"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
+                                <ArrowLeft />
                             </Link>
                         )}
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        {/* <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                             <Link2/>
-                        </div>
+                        </div> */}
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                            <Link href={"/"}
+                                className="text-3xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                                 TinyLink
-                            </h1>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Shorten, Track, Share</p>
+                            </Link>
+                            {/* <p className="text-sm text-gray-600 dark:text-gray-400">Shorten, Track, Share</p> */}
                         </div>
                     </div>
                     {mounted && (
