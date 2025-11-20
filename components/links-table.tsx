@@ -285,4 +285,5 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
       </div>
     </div>
   );
+  
 }
