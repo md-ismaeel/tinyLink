@@ -23,10 +23,29 @@ export async function GET(
       );
     }
 
-    // Perform redirect
-    return NextResponse.redirect(links[0].original_url, {
-      status: 302,
-    });
+    const originalUrl = links[0].original_url;
+
+    // IMPORTANT: Ensure the URL is absolute (starts with http:// or https://)
+    let redirectUrl = originalUrl;
+
+    // If URL doesn't start with http:// or https://, add https://
+    if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+      redirectUrl = `https://${redirectUrl}`;
+    }
+
+    // Validate URL format
+    try {
+      new URL(redirectUrl); // This will throw if URL is invalid
+    } catch (urlError) {
+      console.error('Invalid URL format:', redirectUrl);
+      return NextResponse.json(
+        { error: 'Invalid URL format' },
+        { status: 400 }
+      );
+    }
+
+    // Perform redirect with absolute URL
+    return NextResponse.redirect(redirectUrl, 302);
   } catch (error) {
     console.error('Error processing redirect:', error);
     return NextResponse.json(

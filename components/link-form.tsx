@@ -79,19 +79,17 @@ export function LinkForm({ onSuccess, setShowForm }: LinkFormProps) {
         <div className="space-y-2">
           <label
             htmlFor="url"
-            className={`block text-sm font-semibold transition-colors ${
-              focusedField === "url"
+            className={`block text-sm font-semibold transition-colors ${focusedField === "url"
                 ? "text-blue-600 dark:text-blue-400"
                 : "text-gray-700 dark:text-gray-300"
-            }`}
+              }`}
           >
             Original URL
           </label>
           <div className="relative group">
             <div
-              className={`absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-20 blur transition-opacity ${
-                focusedField === "url" ? "opacity-30" : ""
-              }`}
+              className={`absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-20 blur transition-opacity ${focusedField === "url" ? "opacity-30" : ""
+                }`}
             ></div>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
               <Link2 className="w-5 h-5" />
@@ -115,11 +113,10 @@ export function LinkForm({ onSuccess, setShowForm }: LinkFormProps) {
         <div className="space-y-2">
           <label
             htmlFor="code"
-            className={`block text-sm font-semibold transition-colors ${
-              focusedField === "code"
+            className={`block text-sm font-semibold transition-colors ${focusedField === "code"
                 ? "text-purple-600 dark:text-purple-400"
                 : "text-gray-700 dark:text-gray-300"
-            }`}
+              }`}
           >
             Custom Short Code
             <span className="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
@@ -128,9 +125,8 @@ export function LinkForm({ onSuccess, setShowForm }: LinkFormProps) {
           </label>
           <div className="relative group">
             <div
-              className={`absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur transition-opacity ${
-                focusedField === "code" ? "opacity-30" : ""
-              }`}
+              className={`absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur transition-opacity ${focusedField === "code" ? "opacity-30" : ""
+                }`}
             ></div>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
               <Hash className="w-5 h-5" />
@@ -161,9 +157,8 @@ export function LinkForm({ onSuccess, setShowForm }: LinkFormProps) {
         <button
           type="submit"
           disabled={loading || !originalUrl}
-          className={`relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 cursor-pointer ${
-            loading ? "cursor-wait" : ""
-          }`}
+          className={`relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 cursor-pointer ${loading ? "cursor-wait" : ""
+            }`}
         >
           {loading ? (
             <>
