@@ -126,8 +126,9 @@ export default function StatsPage() {
     : 'Never';
 
   const baseUrl = App_URL;
-  console.log("baseUrl",baseUrl);
+  console.log("baseUrl", baseUrl);
   const shortUrl = `${baseUrl}/${stats.short_code}`;
+  console.log("shortUrl", shortUrl);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
