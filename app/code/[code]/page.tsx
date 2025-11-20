@@ -126,7 +126,7 @@ export default function StatsPage() {
     : 'Never';
 
   const baseUrl = App_URL;
-  // console.log("baseUrl",baseUrl);
+  console.log("baseUrl",baseUrl);
   const shortUrl = `${baseUrl}/${stats.short_code}`;
 
   return (

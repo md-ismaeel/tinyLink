@@ -1,6 +1,3 @@
-export function cn(...classes: (string | false | undefined)[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 // Generate a random short code (6-8 characters)
 export function generateShortCode(length: number = 6): string {
