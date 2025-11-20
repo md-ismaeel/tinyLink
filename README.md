@@ -103,7 +103,6 @@ The `/healthz` endpoint must return the following JSON structure:
 
 ```json
 {
-# ------------------------------------
   # Database Configuration
   # ------------------------------------
   # Connection string for Neon Postgres
