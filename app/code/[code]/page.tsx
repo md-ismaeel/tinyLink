@@ -7,8 +7,10 @@ import { toast, Toaster } from 'react-hot-toast';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Link from 'next/link';
-import { Home, Trash2, View, Link as LinkIcon, Calendar, Clock, Copy, Check, ExternalLink } from 'lucide-react';
+import { Home, Trash2, View, Link as LinkIcon, Calendar, Clock, Copy, Check, ExternalLink, AlertCircle } from 'lucide-react';
 import { App_URL } from '@/config/config';
+import Loading from '@/components/loading';
+import Error from '@/components/error';
 
 interface LinkStats {
   id: number;
@@ -27,42 +29,39 @@ export default function StatsPage() {
 
   const [stats, setStats] = useState<LinkStats | null>(null);
   const [copied, setCopied] = useState(false);
-
-  // State used to force a synchronous error throw (for error.js boundary)
-  const [errorToThrow, setErrorToThrow] = useState<Error | null>(null);
-
-  if (errorToThrow) {
-    throw errorToThrow;
-  }
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(`/api/links/${code}`);
         setStats(response.data);
         toast.success('Stats loaded successfully!');
       } catch (err) {
-        let error: Error;
-
         if (axios.isAxiosError(err) && err.response) {
           const status = err.response.status;
-          let message = status === 404
-            ? `Link Not Found (404) for code: ${code}`
-            : `API Failure (Status: ${status}).`;
-          error = new Error(message);
+          if (status === 404) {
+            setError(`Link with code "${code}" not found`);
+            toast.error('Link not found');
+          } else {
+            setError(`Failed to load link stats (Error ${status})`);
+            toast.error('Failed to load stats');
+          }
         } else {
-          error = new Error("A network or unknown error occurred.");
+          setError('A network error occurred. Please try again.');
+          toast.error('Network error');
         }
-
-        // Triggers re-render, activating the synchronous throw above.
-        setErrorToThrow(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, [code]);
 
-  // handle copy to clipboard
+  // Handle copy to clipboard
   const handleCopy = async () => {
     const baseUrl = App_URL;
     const shortUrl = `${baseUrl}/${code}`;
@@ -102,6 +101,25 @@ export default function StatsPage() {
     }
   };
 
+  // Loading State
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <Header />
+        <Loading />
+        <Footer />
+      </main>
+    );
+  }
+
+  // Error State
+  if (error) {
+    return (
+      <Error error={{ message: error }} reset={() => router.push('/')} />
+    );
+  }
+
+  // No stats found (shouldn't happen after error check, but just in case)
   if (!stats) {
     return null;
   }
@@ -126,7 +144,6 @@ export default function StatsPage() {
     : 'Never';
 
   const baseUrl = App_URL;
-  console.log("baseUrl", baseUrl);
   const shortUrl = `${baseUrl}/${stats.short_code}`;
 
   return (
@@ -182,7 +199,7 @@ export default function StatsPage() {
                   </p>
                   <Link
                     className={`relative px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 cursor-pointer`}
-                    href={stats.original_url}
+                    href={shortUrl}
                     target='_blank'
                   >
                     <ExternalLink className="w-4 h-4 shrink-0 mt-0.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />

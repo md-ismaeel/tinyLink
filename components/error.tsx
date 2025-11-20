@@ -5,13 +5,13 @@ import { useEffect } from 'react';
 import { RefreshCw, Zap } from 'lucide-react';
 
 interface ErrorState {
-    error: Error & { digest?: string };
+    error: { message?: string };
     reset: () => void;
 }
 
 export default function Error({ error, reset }: ErrorState) {
     useEffect(() => {
-        console.error("Next.js Runtime Error Caught by Boundary:", error.message, error.digest);
+        console.error("Next.js Runtime Error Caught by Boundary:", error.message, error.message);
     }, [error]);
 
     return (

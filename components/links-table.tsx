@@ -14,8 +14,8 @@ import {
   BarChart2,
   Trash2,
 } from 'lucide-react';
-import Loading from './loading';
 import { App_URL } from '@/config/config';
+import Skeleton from './skeleton';
 
 interface LinkData {
   id: number;
@@ -98,7 +98,7 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
   // --- Loading State ---
   if (loading) {
     return (
-      <Loading />
+      <Skeleton />
     );
   }
 
@@ -286,5 +286,5 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
       </div>
     </div>
   );
-  
+
 }
