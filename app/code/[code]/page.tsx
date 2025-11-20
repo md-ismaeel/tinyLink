@@ -8,6 +8,7 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import Link from 'next/link';
 import { Home, Trash2, View, Link as LinkIcon, Calendar, Clock, Copy, Check, ExternalLink } from 'lucide-react';
+import { App_URL } from '@/config/config';
 
 interface LinkStats {
   id: number;
@@ -63,7 +64,7 @@ export default function StatsPage() {
 
   // handle copy to clipboard
   const handleCopy = async () => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+    const baseUrl = App_URL;
     const shortUrl = `${baseUrl}/${code}`;
 
     try {
@@ -124,7 +125,8 @@ export default function StatsPage() {
     })
     : 'Never';
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+  const baseUrl = App_URL;
+  // console.log("baseUrl",baseUrl);
   const shortUrl = `${baseUrl}/${stats.short_code}`;
 
   return (

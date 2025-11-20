@@ -15,6 +15,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import Loading from './loading';
+import { App_URL } from '@/config/config';
 
 interface LinkData {
   id: number;
@@ -75,7 +76,7 @@ export function LinksTable({ refreshTrigger = 0 }: LinksTableProps) {
   };
 
   const handleCopy = async (code: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+    const baseUrl = App_URL;
     const shortUrl = `${baseUrl}/${code}`;
 
     try {
