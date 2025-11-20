@@ -10,9 +10,6 @@ import Link from 'next/link';
 import { Home, Trash2, View, Link as LinkIcon, Calendar, Clock, Copy, Check, ExternalLink } from 'lucide-react';
 import { App_URL } from '@/config/config';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 interface LinkStats {
   id: number;
   short_code: string;
@@ -39,23 +36,18 @@ export default function StatsPage() {
   }
 
   useEffect(() => {
-    // Check if 'code' is available before fetching
-    if (!code) {
-      return;
-    }
-
     const fetchStats = async () => {
       try {
         const response = await axios.get(`/api/links/${code}`);
         setStats(response.data);
-        toast.success('Stats loaded successfully!', { id: 'stats-load-status' });
+        toast.success('Stats loaded successfully!');
       } catch (err) {
         let error: Error;
 
         if (axios.isAxiosError(err) && err.response) {
           const status = err.response.status;
           let message = status === 404
-            ? `Link Not Found (404) for code: ${code}.`
+            ? `Link Not Found (404) for code: ${code}`
             : `API Failure (Status: ${status}).`;
           error = new Error(message);
         } else {
@@ -111,33 +103,30 @@ export default function StatsPage() {
   };
 
   if (!stats) {
-    // Show a minimal loading state while fetching data
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500 dark:text-gray-400">
-          Loading link statistics...
-        </div>
-      </main>
-    );
+    return null;
   }
 
   // --- Main Content Logic ---
-  const dateOptions: Intl.DateTimeFormatOptions = {
+  const createdDate = new Date(stats.created_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true,
-  };
-
-  const createdDate = new Date(stats.created_at).toLocaleDateString('en-US', dateOptions);
+  });
 
   const lastClickedDate = stats.last_clicked_at
-    ? new Date(stats.last_clicked_at).toLocaleDateString('en-US', dateOptions)
+    ? new Date(stats.last_clicked_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
     : 'Never';
 
   const baseUrl = App_URL;
+  console.log("baseUrl", baseUrl);
   const shortUrl = `${baseUrl}/${stats.short_code}`;
 
   return (
