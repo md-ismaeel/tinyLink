@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
+import { useState } from 'react';
 import { LinkForm } from '@/components/link-form';
 import { LinksTable } from '@/components/links-table';
 import { Toaster } from 'react-hot-toast';
@@ -39,9 +38,9 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 text-center animate-fade-in">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          Shorten your URLs with <span className="bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">ease</span>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 text-center animate-fade-in relative z-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-400 mb-4">
+          Shorten your URLs with <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">ease</span>
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           Create short, memorable links and track every click with powerful analytics
@@ -49,14 +48,14 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 relative z-10">
         <div className="space-y-8">
           {/* Create Link Button - Shows when form is hidden */}
           {!showForm && (
             <div className="flex justify-center animate-slide-in-up">
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-liner-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-102 cursor-pointer"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -69,23 +68,12 @@ export default function Home() {
           {/* Form Section - Initially hidden */}
           {showForm && (
             <div className="animate-slide-in-up">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Create Short Link</h3>
-                <button
-                  onClick={() => setShowForm(false)}
-                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  aria-label="Close form"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
               <LinkForm
                 onSuccess={() => {
                   setRefreshKey(prev => prev + 1);
                   setShowForm(false);
                 }}
+                setShowForm={setShowForm}
               />
             </div>
           )}
@@ -106,55 +94,6 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px);
-          }
-          50% {
-            transform: translateY(-10px) translateX(-10px);
-          }
-          75% {
-            transform: translateY(-15px) translateX(5px);
-          }
-        }
-
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
-        }
-
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out;
-        }
-
-        @keyframes slide-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-slide-in-up {
-          animation: slide-in-up 0.6s ease-out;
-        }
-      `}</style>
     </main>
   );
 }

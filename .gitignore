@@ -12,7 +12,7 @@ out/
 
 # Static files build cache
 .next/cache/
-.SETUP.md
+SETUP.md
 
 
 # Local env files
